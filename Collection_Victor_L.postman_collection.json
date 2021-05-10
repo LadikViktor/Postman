@@ -619,7 +619,31 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"pm.test(\"Currency\", function (){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var name = 0;\r",
+							"    for (var i=0; i<jsonData.length; i++){\r",
+							"        pm.environment.set(\"curr_code\", jsonData[i].Cur_ID);\r",
+							"        const cur = {\r",
+							"            'method': 'POST',\r",
+							"            'url': 'http://116.203.27.46:5002/curr_byn',\r",
+							"            'body':{\r",
+							"                'mode':'formdata',\r",
+							"                'formdata':[\r",
+							"                    {'key':'auth_token', 'value':pm.variables.get(\"token\")},\r",
+							"                    {'key':'curr_code', 'value': jsonData[i].Cur_ID}\r",
+							"                ]\r",
+							"            }\r",
+							"        };\r",
+							"        pm.sendRequest(cur,(Error, response) =>{\r",
+							"            if (response.code === 500)\r",
+							"            {name++;}\r",
+							"            else{\r",
+							"                console.log (response.json());\r",
+							"            }\r",
+							"        });\r",
+							"    }\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
